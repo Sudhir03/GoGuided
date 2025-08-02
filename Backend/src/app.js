@@ -55,10 +55,10 @@ const limiter = rateLimit({
 app.use("/api", limiter);
 
 // Enable CORS for frontend origin
-// process.env.FRONTEND_URL
+const frontendUrl = process.env.FRONTEND_URL;
 app.use(
   cors({
-    origin: "https://go-guided.netlify.app",
+    origin: frontendUrl,
     credentials: true,
   })
 );
