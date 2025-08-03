@@ -4,7 +4,7 @@ function Sidebar({ children }) {
   return (
     <div
       className="flex flex-col 
-       max-h-[92vh]
+       max-h-full
       py-2 space-y-4 
       w-full md:w-auto bg-green-700 shadow-lg shadow-black/50"
     >

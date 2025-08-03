@@ -53,19 +53,19 @@ function Stats() {
         <SummaryCard
           title={"Completed"}
           icon={FaRegCheckCircle}
-          value={stats.completed}
+          value={stats.completed || 0}
           onClick={() => navigate("bookings/completed")}
         />
         <SummaryCard
           title={"Ongoing"}
           icon={FaRegClock}
-          value={stats.ongoing}
+          value={stats.ongoing || 0}
           onClick={() => navigate("bookings/ongoing")}
         />
         <SummaryCard
           title={"Upcoming"}
           icon={FaRegCalendarAlt}
-          value={stats.upcoming}
+          value={stats.upcoming || 0}
           onClick={() => navigate("bookings/upcoming")}
         />
       </div>
