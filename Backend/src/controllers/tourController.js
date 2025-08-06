@@ -202,14 +202,57 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllToursAsCards = catchAsync(async (req, res, next) => {
-  // Step 1: Get all tours
-  const tours = await Tour.find()
+  const {
+    search = "",
+    status,
+    difficulty,
+    startDate,
+    endDate,
+    sortOrder = "asc",
+  } = req.query;
+
+  const filters = {};
+
+  // 🔍 Search on title (case-insensitive)
+  if (search) {
+    filters.title = { $regex: search, $options: "i" };
+  }
+
+  // 🔽 Difficulty filter
+  if (difficulty) {
+    filters.difficulty = difficulty.toLowerCase();
+  }
+
+  // 📆 Date range filter (optional independent of status)
+  if (startDate || endDate) {
+    filters.startDate = {};
+    if (startDate) filters.startDate.$gte = new Date(startDate);
+    if (endDate) filters.startDate.$lte = new Date(endDate);
+  }
+
+  // 🟡 Status filter based on current date
+  if (status) {
+    const today = new Date();
+
+    if (status === "upcoming") {
+      filters.startDate = { $gt: today };
+    } else if (status === "ongoing") {
+      filters.startDate = { $lte: today };
+      filters.endDate = { $gte: today };
+    } else if (status === "completed") {
+      filters.endDate = { $lt: today };
+    }
+  }
+
+  // 🔍 Fetch filtered tours
+  const tours = await Tour.find(filters)
     .select(
-      "title slug description location startDate loacation difficulty tourSpots thumbnail"
+      "title slug description location startDate endDate difficulty tourSpots thumbnail"
     )
+    .sort({ startDate: sortOrder === "desc" ? -1 : 1 })
     .lean();
 
-  // Step 2: Get avgRating for all tours
+  // ⭐ Aggregate average rating
   const ratingAgg = await Review.aggregate([
     {
       $group: {
@@ -219,13 +262,13 @@ exports.getAllToursAsCards = catchAsync(async (req, res, next) => {
     },
   ]);
 
-  // Step 3: Create a map for quick lookup
+  // 🔁 Map for quick lookup
   const ratingMap = {};
   ratingAgg.forEach((r) => {
     ratingMap[r._id.toString()] = parseFloat(r.avgRating.toFixed(1));
   });
 
-  // Step 4: Build final response
+  // 🎯 Final response formatting
   res.status(200).json({
     isSuccess: true,
     results: tours.length,
@@ -237,7 +280,7 @@ exports.getAllToursAsCards = catchAsync(async (req, res, next) => {
         description: tour.description,
         location: tour.location,
         startDate: tour.startDate,
-        loacation: tour.loacation,
+        endDate: tour.endDate,
         difficulty: tour.difficulty,
         avgRating: ratingMap[tour._id.toString()] || 0,
         tourSpots: tour.tourSpots?.length || 0,

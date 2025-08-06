@@ -1,4 +1,5 @@
-import { FaHome, FaInfoCircle, FaPhone, FaUser } from "react-icons/fa";
+import { FaHome, FaInfoCircle, FaPhone } from "react-icons/fa";
+import { GiEarthAsiaOceania } from "react-icons/gi";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function BottomNav() {
@@ -7,7 +8,7 @@ function BottomNav() {
 
   const navItems = [
     { label: "Home", icon: <FaHome />, path: "/" },
-    { label: "Tours", icon: <FaUser />, path: "/tours" },
+    { label: "Tours", icon: <GiEarthAsiaOceania />, path: "/tours" },
     { label: " About Us", icon: <FaInfoCircle />, path: "/about" },
     { label: "Contact Us", icon: <FaPhone />, path: "/contact" },
   ];
