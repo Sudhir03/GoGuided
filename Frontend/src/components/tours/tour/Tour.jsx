@@ -157,8 +157,8 @@ function Tour() {
               Rating:
             </span>
             <span className="text-sm sm:text-lg font-light">
-              {tour.rating && tour.rating > 0
-                ? `${tour.rating}/5`
+              {tour.avgRating && tour.avgRating > 0
+                ? `${tour.avgRating}/5`
                 : "Not rated"}
             </span>
           </div>

@@ -9,3 +9,5 @@
 .env
 .env.development
 .env.production
+Backend/src/config/resetAllPasswords.js
+Backend/src/config/changeTourDate.js
